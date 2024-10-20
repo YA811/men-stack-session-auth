@@ -36,4 +36,38 @@ router.post('/sign-up', async (req, res) => {
   res.send(`Thanks for signing up ${newUser.username}`);
 });
 
+//sign in 
+router.get('/sign-in', async (req,res)=>{
+res.render('auth/sign-in.ejs');
+});
+
+router.post("/sign-in", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const userInDatabase = await User.findOne({username});
+
+    if (!userInDatabase) {
+      return res.send('Login failed, please try again');
+    }
+   
+    const validPassword = auth.comparePassword(password, userInDatabase.password);
+
+    if (!validPassword) {
+      return res.send('Login failed, please try again');
+    }
+
+    req.session.user = {
+        username: userInDatabase.username,
+    };
+
+    res.redirect("/");
+
+  });
+
+  router.get("/sign-out", (req, res) => {
+    req.session.destroy();
+    res.redirect("/");
+  });
+
 module.exports = router;
