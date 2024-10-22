@@ -32,8 +32,10 @@ router.post('/sign-up', async (req, res) => {
   const payload = { username, password: hashPassword };
 
   const newUser = await User.create(payload);
+
   // respond back to the browser
   res.send(`Thanks for signing up ${newUser.username}`);
+
 });
 
 //sign in 
@@ -59,9 +61,9 @@ router.post("/sign-in", async (req, res) => {
 
     req.session.user = {
         username: userInDatabase.username,
-    };
-
-    req.session.save(() => {
+      };
+      
+      req.session.save(() => {
         res.redirect("/");
       });
 
